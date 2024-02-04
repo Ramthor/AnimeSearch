@@ -1,74 +1,55 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 
 const AnimeSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [top, setTop] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [isClick, setIsClick] = useState(false);
+  const [isClick, setIsClick] = useState(true);
 
   const apiUrl = "https://api.jikan.moe/v4/top/";
 
-  useEffect(() => {
-    // Load top anime initially when the component mounts
-    if (isClick) {
-      loadTopAnime();
-    }
-  }, [isClick]);
-
   const loadTopAnime = async () => {
     try {
-      const response = await axios.get(`${apiUrl}${top}`);
-      console.log(top);
-      console.log(response.data.data);
+      const response = await axios.get(`https://api.jikan.moe/v4/top/${top}`);
+
       setSearchResults(response.data.data || []);
-      setTop("");
     } catch (error) {
       console.error("Error fetching top anime data:", error);
     }
+    setIsClick(false);
   };
 
   const searchAnime = async () => {
     try {
-      if (isClick) {
-        // If it's Top Anime, do nothing here, it will be loaded initially
-      } else {
-        const response = await axios.get(
-          `https://api.jikan.moe/v4/anime?q=${searchTerm}`
-        );
-        console.log(response.data.data);
-        setSearchResults(response.data.data || []);
-      }
+      // If it's Top Anime, do nothing here, it will be loaded initially
+
+      const response = await axios.get(
+        `https://api.jikan.moe/v4/anime?q=${searchTerm}`
+      );
+      console.log(response.data.data);
+      setSearchResults(response.data.data || []);
     } catch (error) {
       console.error("Error fetching anime data:", error);
       // You can add user-friendly error handling here
     }
   };
 
-  const HandelClick = (e) => {
-    const selectedTop = e.currentTarget.value;
-    console.log(selectedTop);
-    setIsClick(!isClick);
-    // Update top and call loadTopAnime
-    if (!isClick) {
-      setTop(selectedTop);
-      loadTopAnime();
-    }
-  };
-
   return (
     <div className="container">
       <div>
-        <h1>Anime Search</h1>
-        <button id="topAnimeButton" value="anime" onClick={HandelClick}>
-          <p> Top Anime</p>
-        </button>
-        <button id="topAnimeButton" value="manga" onClick={HandelClick}>
-          <p> Top Manga</p>
-        </button>
-
-        <button id="topAnimeButton" value="characters" onClick={HandelClick}>
-          <p> Top characters</p>
+        <select
+          name="cars"
+          id="cars"
+          onChange={(e) => setTop(e.currentTarget.value)}
+        >
+          {isClick == true ? <option onClick={loadTopAnime}></option> : null}
+          <option value="anime">Anime Search</option>
+          <option value="characters"> Top Anime</option>
+          <option value="manga"> Top Manga</option>
+        </select>
+        <button id="topAnimeButton" onClick={loadTopAnime}>
+          <p> Search</p>
         </button>
         <input
           type="text"
