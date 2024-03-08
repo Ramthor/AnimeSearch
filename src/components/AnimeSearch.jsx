@@ -7,8 +7,6 @@ const AnimeSearch = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isClick, setIsClick] = useState(true);
 
-  const apiUrl = "https://api.jikan.moe/v4/top/";
-
   const loadTopAnime = async () => {
     try {
       const response = await axios.get(`https://api.jikan.moe/v4/top/${top}`);
@@ -22,8 +20,6 @@ const AnimeSearch = () => {
 
   const searchAnime = async () => {
     try {
-      // If it's Top Anime, do nothing here, it will be loaded initially
-
       const response = await axios.get(
         `https://api.jikan.moe/v4/anime?q=${searchTerm}`
       );
@@ -31,26 +27,29 @@ const AnimeSearch = () => {
       setSearchResults(response.data.data || []);
     } catch (error) {
       console.error("Error fetching anime data:", error);
-      // You can add user-friendly error handling here
     }
   };
 
   return (
     <div className="container">
       <div>
-        <select
-          name="cars"
-          id="cars"
-          onChange={(e) => setTop(e.currentTarget.value)}
-        >
-          {isClick == true ? <option onClick={loadTopAnime}></option> : null}
-          <option value="anime">Anime Search</option>
-          <option value="characters"> Top Anime</option>
-          <option value="manga"> Top Manga</option>
-        </select>
-        <button id="topAnimeButton" onClick={loadTopAnime}>
-          <p> Search</p>
-        </button>
+        <h1>Anime Search</h1>
+        <div className="hi">
+          <select
+            name="anime"
+            id="top_ACM"
+            onChange={(e) => setTop(e.currentTarget.value)}
+          >
+            <option value="">select</option>
+            <option value="anime"> Top Anime</option>
+            <option value="characters"> Top characters</option>
+            <option value="manga"> Top Manga</option>
+          </select>
+          <button id="topAnimeButton" onClick={loadTopAnime}>
+            Search
+          </button>
+        </div>
+
         <input
           type="text"
           id="searchInput"
